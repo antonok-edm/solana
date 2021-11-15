@@ -79,7 +79,7 @@ pub struct LedgerSettings {
 
 /// Ledger Wallet device
 pub struct LedgerWallet {
-    pub device: hidapi::HidDevice,
+    //pub device: hidapi::HidDevice,
     pub pretty_path: String,
     pub version: FirmwareVersion,
 }
@@ -91,13 +91,13 @@ impl fmt::Debug for LedgerWallet {
 }
 
 impl LedgerWallet {
-    pub fn new(device: hidapi::HidDevice) -> Self {
+    /*pub fn new(device: hidapi::HidDevice) -> Self {
         Self {
             device,
             pretty_path: String::default(),
             version: FirmwareVersion::new(0, 0, 0),
         }
-    }
+    }*/
 
     // Transport Protocol:
     //		* Communication Channel Id		(2 bytes big endian )
@@ -122,7 +122,8 @@ impl LedgerWallet {
         data: &[u8],
         outdated_app: bool,
     ) -> Result<(), RemoteWalletError> {
-        let data_len = data.len();
+        Err(RemoteWalletError::Hid("USB support disabled".to_string()))
+        /*let data_len = data.len();
         let mut offset = 0;
         let mut sequence_number = 0;
         let mut hid_chunk = [0_u8; HID_PACKET_SIZE];
@@ -190,7 +191,7 @@ impl LedgerWallet {
                 ));
             }
         }
-        Ok(())
+        Ok(())*/
     }
 
     // Transport Protocol:
@@ -204,7 +205,8 @@ impl LedgerWallet {
     //		* APDU_Payload				(Variable)
     //
     fn read(&self) -> Result<Vec<u8>, RemoteWalletError> {
-        let mut message_size = 0;
+        Err(RemoteWalletError::Hid("USB support disabled".to_string()))
+        /*let mut message_size = 0;
         let mut message = Vec::new();
 
         // terminate the loop if `sequence_number` reaches its max_value and report error
@@ -248,7 +250,7 @@ impl LedgerWallet {
         Self::parse_status(status)?;
         let new_len = message.len() - 2;
         message.truncate(new_len);
-        Ok(message)
+        Ok(message)*/
     }
 
     fn _send_apdu(
@@ -352,7 +354,7 @@ impl RemoteWallet for LedgerWallet {
         "Ledger hardware wallet"
     }
 
-    fn read_device(
+    /*fn read_device(
         &mut self,
         dev_info: &hidapi::DeviceInfo,
     ) -> Result<RemoteWalletInfo, RemoteWalletError> {
@@ -382,7 +384,7 @@ impl RemoteWallet for LedgerWallet {
             pubkey,
             error,
         })
-    }
+    }*/
 
     fn get_pubkey(
         &self,

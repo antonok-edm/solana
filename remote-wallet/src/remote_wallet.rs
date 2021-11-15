@@ -61,11 +61,11 @@ pub enum RemoteWalletError {
     LocatorError(#[from] LocatorError),
 }
 
-impl From<hidapi::HidError> for RemoteWalletError {
+/*impl From<hidapi::HidError> for RemoteWalletError {
     fn from(err: hidapi::HidError) -> RemoteWalletError {
         RemoteWalletError::Hid(err.to_string())
     }
-}
+}*/
 
 impl From<RemoteWalletError> for SignerError {
     fn from(err: RemoteWalletError) -> SignerError {
@@ -87,23 +87,24 @@ impl From<RemoteWalletError> for SignerError {
 
 /// Collection of connected RemoteWallets
 pub struct RemoteWalletManager {
-    usb: Arc<Mutex<hidapi::HidApi>>,
+    //usb: Arc<Mutex<hidapi::HidApi>>,
     devices: RwLock<Vec<Device>>,
 }
 
 impl RemoteWalletManager {
-    /// Create a new instance.
+    /*/// Create a new instance.
     pub fn new(usb: Arc<Mutex<hidapi::HidApi>>) -> Arc<Self> {
         Arc::new(Self {
             usb,
             devices: RwLock::new(Vec::new()),
         })
-    }
+    }*/
 
     /// Repopulate device list
     /// Note: this method iterates over and updates all devices
     pub fn update_devices(&self) -> Result<usize, RemoteWalletError> {
-        let mut usb = self.usb.lock();
+        Err(RemoteWalletError::Hid("USB support disabled".to_string()))
+        /*let mut usb = self.usb.lock();
         usb.refresh_devices()?;
         let devices = usb.device_list();
         let num_prev_devices = self.devices.read().len();
@@ -146,7 +147,7 @@ impl RemoteWalletManager {
             return Err(errors[0].clone());
         }
 
-        Ok(num_curr_devices - num_prev_devices)
+        Ok(num_curr_devices - num_prev_devices)*/
     }
 
     /// List connected and acknowledged wallets
@@ -200,11 +201,12 @@ pub trait RemoteWallet {
         "remote wallet"
     }
 
+    /*
     /// Parse device info and get device base pubkey
     fn read_device(
         &mut self,
         dev_info: &hidapi::DeviceInfo,
-    ) -> Result<RemoteWalletInfo, RemoteWalletError>;
+    ) -> Result<RemoteWalletInfo, RemoteWalletError>;*/
 
     /// Get solana pubkey from a RemoteWallet
     fn get_pubkey(
@@ -281,8 +283,9 @@ pub fn is_valid_hid_device(usage_page: u16, interface_number: i32) -> bool {
 
 /// Helper to initialize hidapi and RemoteWalletManager
 pub fn initialize_wallet_manager() -> Result<Arc<RemoteWalletManager>, RemoteWalletError> {
-    let hidapi = Arc::new(Mutex::new(hidapi::HidApi::new()?));
-    Ok(RemoteWalletManager::new(hidapi))
+    Err(RemoteWalletError::Hid("USB support disabled".to_string()))
+    /*let hidapi = Arc::new(Mutex::new(hidapi::HidApi::new()?));
+    Ok(RemoteWalletManager::new(hidapi))*/
 }
 
 pub fn maybe_wallet_manager() -> Result<Option<Arc<RemoteWalletManager>>, RemoteWalletError> {
